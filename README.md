@@ -1,5 +1,5 @@
 # Voxy-Recovery
-If you accidently removed/overwrite your world and still have the chunks loaded from using the Voxy mod you can use this converter to recover them to .mca files. I did NOT put much effort in to this and this is probably not the most effective way to do it but its still pretty good. Detailed info down below. You MUST HAVE  pip install rocksdict zstandard anvil-parser2.
+If you accidently removed/overwrite your world and still have the chunks loaded from using the Voxy mod you can use this converter to recover them to .mca files. I did NOT put much effort in to this and this is probably not the most effective way to do it but its still pretty good. Detailed info down below. You MUST DO pip install rocksdict zstandard anvil-parser2 at your CMD. You can easily use it by just opening the py project via cmd or double clicking (cmd is recommended).
 
 
 # Voxy-Recovery-(Voxy-to-mca)
