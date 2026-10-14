@@ -1,5 +1,5 @@
 # Voxy-Recovery
-If you accidently removed/overwrite your world and still have the chunks loaded from using the Voxy mod you can use this converter to recover them to .mca files. I did NOT put much effort in to this and this is probably not the most effective way to do it but its still pretty good. Detailed info down below. You MUST DO pip install rocksdict zstandard anvil-parser2 at your CMD. You can easily use it by just opening the py project via cmd or double clicking (cmd is recommended).
+If you accidently removed/overwrite your world and still have the chunks loaded from using the Voxy mod you can use this converter to recover them to .mca files. I did NOT put much effort in to this and this is probably not the most effective way to do it but its still pretty good. Detailed info down below. You MUST DO pip install rocksdict zstandard numpy at your CMD. You can easily use it by just opening the py project via cmd or double clicking (cmd is recommended).
 
 
 # Voxy-Recovery-(Voxy-to-mca)
@@ -14,9 +14,9 @@ Convert [Voxy](https://modrinth.com/mod/voxy) mod's RocksDB LOD storage into sta
 
 Voxy stores blocks for **visual rendering only**, not full world state. This means:
 
-- **Block states are not preserved** — facing direction, slab type, waterlogged, powered, etc. are all lost
+- **Block state properties** (facing, half, axis, ...) are copied from Voxy's mapping table, but Voxy may not store every state exactly
 - **Slabs, signs, fences, banners, fluids** may be missing or placed as full blocks
-- **Entities** (chests, spawners, etc.) are not stored by Voxy at all
+- **Entities and block entities** (chest contents, spawners, sign text, etc.) are not stored by Voxy at all
 - This is best used to recover the **rough shape and location** of structures, not a full survival restore
 
 ---
@@ -24,7 +24,7 @@ Voxy stores blocks for **visual rendering only**, not full world state. This mea
 ## Requirements
 
 ```
-pip install rocksdict zstandard anvil-parser2
+pip install rocksdict zstandard numpy
 ```
 
 Python 3.10+ recommended.
@@ -34,7 +34,7 @@ Python 3.10+ recommended.
 ## Usage
 
 ```
-python voxy_to_mca.py
+python voxy-to-mca.py
 ```
 
 The script will ask you for:
@@ -44,6 +44,24 @@ The script will ask you for:
 2. **Output folder** for the `.mca` files (default: `region`)
 
 At the end it will print the **exact `/tp` command** to teleport to where your blocks are.
+
+You can also pass everything on the command line:
+
+```
+python voxy-to-mca.py "<voxy storage folder>" region --jobs 8 --data-version 3955
+```
+
+| Option | Meaning |
+|---|---|
+| `-j`, `--jobs` | Worker processes (default: all CPU cores) |
+| `--data-version` | Chunk `DataVersion` to write (default `3955` = 1.21.1). Newer game versions upgrade the chunks automatically; don't set it higher than your game version |
+| `--no-properties` | Write block names only, without block state properties |
+
+### Performance
+
+Sections are decoded with numpy and region files are written directly in the 1.18+ chunk format,
+one region per CPU core. A 1000×1000 area converts in seconds to a few minutes instead of hours.
+The work is CPU/zlib bound, so a GPU would not speed it up further.
 
 ---
 
